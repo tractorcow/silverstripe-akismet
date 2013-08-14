@@ -1,0 +1,17 @@
+{
+	"name": "tractorcow/silverstripe-akismet",
+	"description": "Akismet antispam module for Silverstripe",
+	"type": "silverstripe-module",
+	"keywords": ["silverstripe", "spam", "akismet"],
+	"license": "BSD-3-Clause",
+	"require": {
+		"tijsverkoyen/akismet": "1.1.0",
+		"silverstripe/spamprotection": "dev-master"
+	},
+	"authors": [
+		{
+			"name": "Damian Mooyman",
+			"email": "damian.mooyman@gmail.com"
+		}
+	]
+}
