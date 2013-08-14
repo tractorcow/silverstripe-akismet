@@ -4,14 +4,20 @@
 	"type": "silverstripe-module",
 	"keywords": ["silverstripe", "spam", "akismet"],
 	"license": "BSD-3-Clause",
-	"require": {
-		"tijsverkoyen/akismet": "1.1.0",
-		"silverstripe/spamprotection": "dev-master"
-	},
 	"authors": [
 		{
 			"name": "Damian Mooyman",
 			"email": "damian.mooyman@gmail.com"
 		}
-	]
+	],
+	"support": {
+		"issues": "https://github.com/tractorcow/silverstripe-akismet/issues"
+	},
+	"require": {
+		"tijsverkoyen/akismet": "1.1.0",
+		"silverstripe/spamprotection": "dev-master"
+	},
+	"extra": {
+		"installer-name": "akismet"
+	}
 }
