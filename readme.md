@@ -58,6 +58,19 @@ define('SS_AKISMET_API_KEY', '5555dddd55d5d');
 SpamProtectorManager::set_spam_protector('AkismetSpamProtector');
 ```
 
+## Testing
+
+By default, spam protection is disabled for users with ADMIN priviliges. There is also an option to disable
+spam protection for all logged in users. In order to disable this for testing purposes, you can temporarily
+modify these options in your development environment as below:
+
+```php
+if(!Director::isLive()) {
+	Config::inst()->remove('AkismetSpamProtector', 'bypass_permission');
+	Config::inst()->remove('AkismetSpamProtector', 'bypass_members');
+}
+```
+
 ## Comments
 
 If you're using Comments module you can quickly set akismet to filter these out by adding the `CommentSpamProtection`

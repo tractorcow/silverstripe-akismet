@@ -23,7 +23,9 @@ class AkismetField extends SpamProtectorField {
 			$this->getName(),
 			_t('AkismetField.NOTIFICATION', 'I understand that, and give consent to, having this content submitted to
 				a third party for automated spam detection')
-		);
+		)
+			->setError($this->Message(), $this->MessageType())
+			->setForm($this->getForm());
 	}
 	
 	public function Field($properties = array()) {
@@ -59,7 +61,7 @@ class AkismetField extends SpamProtectorField {
 	 *						  In this case, 'mollom_captcha_requested' session is set to true 
 	 *       				  so that Field() knows it's time to display captcha 			
 	 */
-	function validate($validator) {
+	public function validate($validator) {
 		
 		// Check that, if necessary, the user has given permission to check for spam
 		$requireConfirmation = Config::inst()->get('AkismetSpamProtector', 'require_confirmation');
