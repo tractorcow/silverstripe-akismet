@@ -31,11 +31,17 @@ composer require silverstripe/spamprotection "dev-master"
 composer require tractorcow/silverstripe-akismet "3.1.*@dev"
 ```
 
- * Get an API key from [akismet.com](http://akismet.com/) and set in the site against one of the following ways:
+ * Configure your environment to set 'AkismetSpamProtector' as the protector class, and get an API key from
+[akismet.com](http://akismet.com/) and set in the site against one of the following ways.
 
 config.yml:
 
 ```yml
+---
+Name: myspamprotection
+---
+FormSpamProtectionExtension:
+  default_spam_protector: AkismetSpamProtector
 AkismetSpamProtector:
   api_key: 5555dddd55d5d
 ```
@@ -43,6 +49,7 @@ AkismetSpamProtector:
 _config.php:
 
 ```php
+Config::inst()->update('FormSpamProtectorExtension', 'default_spam_protector', 'AkismetSpamProtector');
 AkismetSpamProtector::set_api_key('5555dddd55d5d');
 ```
 
@@ -50,12 +57,7 @@ _ss_environment.php:
 
 ```
 define('SS_AKISMET_API_KEY', '5555dddd55d5d');
-```
-
- * Set Akismet as the default spam protector
-
-```php
-SpamProtectorManager::set_spam_protector('AkismetSpamProtector');
+// and set AkismetSpamProtector as your spam protector using one of the above methods
 ```
 
 ## Testing
@@ -70,6 +72,9 @@ if(!Director::isLive()) {
 	Config::inst()->remove('AkismetSpamProtector', 'bypass_members');
 }
 ```
+
+In order to check that your form is blocking spam correctly, you can always set 'viagra-test-123' as 
+the author and Akismet will always mark this as spam.
 
 ## Comments
 

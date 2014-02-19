@@ -9,6 +9,11 @@
 class AkismetSpamProtector implements SpamProtector {
 	
 	/**
+	 * @var array
+	 */
+	private $fieldMapping = array();
+	
+	/**
 	 * Cached API object
 	 *
 	 * @var TijsVerkoyen\Akismet\Akismet
@@ -65,10 +70,12 @@ class AkismetSpamProtector implements SpamProtector {
 	}
 	
 	public function getFormField($name = null, $title = null, $value = null, $form = null, $rightTitle = null) {
-		return AkismetField::create($name, $title, $value, $form, $rightTitle);
+		return AkismetField::create($name, $title, $value, $form, $rightTitle)
+			->setFieldMapping($this->fieldMapping);
 	}
 
-	public function sendFeedback($object = null, $feedback = "") {
-		return true;
-	}	
+	public function setFieldMapping($fieldMapping) {
+		$this->fieldMapping = $fieldMapping;
+	}
+
 }

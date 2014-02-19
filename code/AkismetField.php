@@ -6,7 +6,12 @@
  * @author Damian Mooyman
  * @package akismet
  */
-class AkismetField extends SpamProtectorField {
+class AkismetField extends FormField {
+	
+	/**
+	 * @var array
+	 */
+	private $fieldMapping = array();
 	
 	/**
 	 * Get the nested confirmation checkbox field
@@ -36,6 +41,22 @@ class AkismetField extends SpamProtectorField {
 	function FieldHolder($properties = array()) {
 		$checkbox = $this->confirmationField();
 		if($checkbox) return $checkbox->FieldHolder($properties);
+	}
+	
+	/**
+	 * @return array
+	 */
+	public function getSpamMappedData() {
+		if(empty($this->fieldMapping)) return null;
+		
+		$result = array();
+		$data = $this->form->getData();
+
+		foreach($this->fieldMapping as $fieldName => $mappedName) {
+			$result[$mappedName] = (isset($data[$fieldName])) ? $data[$fieldName] : null;
+		}
+
+		return $result;
 	}
 	
 	/**
@@ -86,11 +107,11 @@ class AkismetField extends SpamProtectorField {
 		if($bypassMember && Member::currentUser()) return true;
 		
 		// Map input fields to spam fields
-		$mapping = array_flip($this->getFieldMapping());
-		$content = $this->submittedValue($mapping, 'post_body');
-		$author = $this->submittedValue($mapping, 'author_name');
-		$email = $this->submittedValue($mapping, 'author_mail');
-		$url = $this->submittedValue($mapping, 'author_url');
+		$mappedData = $this->getSpamMappedData();
+		$content = isset($mappedData['body']) ? $mappedData['body'] : null;
+		$author = isset($mappedData['authorName']) ? $mappedData['authorName'] : null;
+		$email = isset($mappedData['authorMail']) ? $mappedData['authorMail'] : null;
+		$url = isset($mappedData['authorUrl']) ? $mappedData['authorUrl'] : null;
 		
 		// Check result
 		$isSpam = AkismetSpamProtector::api()->isSpam($content, $author, $email, $url);
@@ -106,5 +127,29 @@ class AkismetField extends SpamProtectorField {
 			"error"
 		);
 		return false;
+	}
+	
+	/**
+	 * Get the fields to map spam protection too
+	 *
+	 * @return array Associative array of Field Names, where the indexes of the array are
+	 * the field names of the form and the values are the standard spamprotection
+	 * fields used by the protector
+	 */
+	public function getFieldMapping() {
+		return $this->fieldMapping;
+	}
+
+	/**
+	 * Set the fields to map spam protection too
+	 *
+	 * @param array $fieldMapping array of Field Names, where the indexes of the array are
+	 * the field names of the form and the values are the standard spamprotection
+	 * fields used by the protector
+	 * @return self
+	 */
+	public function setFieldMapping($fieldMapping) {
+		$this->fieldMapping = $fieldMapping;
+		return $this;
 	}
 }
