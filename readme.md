@@ -49,7 +49,7 @@ AkismetSpamProtector:
 _config.php:
 
 ```php
-Config::inst()->update('FormSpamProtectorExtension', 'default_spam_protector', 'AkismetSpamProtector');
+Config::inst()->update('FormSpamProtectionExtension', 'default_spam_protector', 'AkismetSpamProtector');
 AkismetSpamProtector::set_api_key('5555dddd55d5d');
 ```
 
