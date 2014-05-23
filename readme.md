@@ -95,6 +95,22 @@ _config.php
 CommentingController::add_extension('CommentSpamProtection');
 ```
 
+## Custom Form Usage
+To enable spam protection in your custom forms, call the enableSpamProtection method with your field names mapped to the akismet fields:
+
+````
+$form  = new Form($this, 'Form', $fields, $actions, $validator);
+$form->enableSpamProtection(array(
+  'mapping' => array(
+    'Name' => 'authorName',
+    'Email' => 'authorMail',
+    'Comments' => 'body'
+    )
+  )
+);
+````
+
+
 ## Important notes for those in the EU
 
 Because of the way Akismet works (message, author, and other information sent to a third party) in some countries
