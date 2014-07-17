@@ -16,6 +16,7 @@
 	"require": {
 		"tijsverkoyen/akismet": "1.1.0",
 		"silverstripe/spamprotection": "1.2.0"
+	}
 	"extra": {
 		"installer-name": "akismet"
 	}
