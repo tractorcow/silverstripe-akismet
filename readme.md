@@ -21,15 +21,16 @@ you may encounter, as it helps us all out!
 
 This module can be easily installed on any already-developed website
 
- * Either extract the module into the `akismet` folder, or install using composer
+ * If using composer installation can be done as below
 
 ```bash
-# Dependencies
-composer require tijsverkoyen/akismet "1.1.0"
-composer require silverstripe/spamprotection "dev-master"
-# Akismet Module
-composer require tractorcow/silverstripe-akismet "3.1.*@dev"
+composer require tractorcow/silverstripe-akismet 3.1.x-dev
 ```
+
+ * If not using composer you'll need to download the 
+[akismet module](https://github.com/tractorcow/silverstripe-akismet/releases/tag/3.1.0), 
+[spam protector](https://github.com/silverstripe/silverstripe-spamprotection/releases/tag/1.2.0),
+and [akismet](https://github.com/tijsverkoyen/Akismet/releases/tag/1.1.0)
 
  * Configure your environment to set 'AkismetSpamProtector' as the protector class, and get an API key from
 [akismet.com](http://akismet.com/) and set in the site against one of the following ways.
