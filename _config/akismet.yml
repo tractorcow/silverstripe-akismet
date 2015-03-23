@@ -12,3 +12,7 @@ AkismetSpamProtector:
 # requirements, set this to true in order to require a user prompt prior to submission of user data
 # to the Akismet servers
   require_confirmation: false
+# Set to true to disable spam errors, instead saving this field to the dataobject with the spam detection as a flag.
+# This will disable validation errors when spam is encountered.
+# The flag will be saved to the same field specified by the 'name' option in enableSpamProtection()
+  save_spam: false
