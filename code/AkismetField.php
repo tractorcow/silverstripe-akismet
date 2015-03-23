@@ -12,6 +12,12 @@ class AkismetField extends FormField {
 	 * @var array
 	 */
 	private $fieldMapping = array();
+
+	/**
+	 *
+	 * @var boolean
+	 */
+	protected $isSpam = null;
 	
 	/**
 	 * Get the nested confirmation checkbox field
@@ -60,20 +66,6 @@ class AkismetField extends FormField {
 	}
 	
 	/**
-	 * Determines the field value submitted
-	 * 
-	 * @param array $mapping Mapping of field descriptor to the form field name
-	 * @param string $field Field descriptor to extract
-	 * @return string Resulting value
-	 */
-	protected function submittedValue($mapping, $field) {
-		if(isset($mapping[$field])) $field = $mapping[$field];
-		return isset($_REQUEST[$field])
-			? $_REQUEST[$field]
-			: "";
-	}
-	
-	/**
 	 * This function first gets values from mapped fields and then check these values against
 	 * Mollom web service and then notify callback object with the spam checking result. 
 	 * @return 	boolean		- true when Mollom confirms that the submission is ham (not spam)
@@ -98,24 +90,12 @@ class AkismetField extends FormField {
 			return false;
 		}
 		
-		// Check bypass permission
-		$permission = Config::inst()->get('AkismetSpamProtector', 'bypass_permission');
-		if($permission && Permission::check($permission)) return true;
-		
-		// if the user has logged and there's no force check on member
-		$bypassMember = Config::inst()->get('AkismetSpamProtector', 'bypass_members');
-		if($bypassMember && Member::currentUser()) return true;
-		
-		// Map input fields to spam fields
-		$mappedData = $this->getSpamMappedData();
-		$content = isset($mappedData['body']) ? $mappedData['body'] : null;
-		$author = isset($mappedData['authorName']) ? $mappedData['authorName'] : null;
-		$email = isset($mappedData['authorMail']) ? $mappedData['authorMail'] : null;
-		$url = isset($mappedData['authorUrl']) ? $mappedData['authorUrl'] : null;
-		
 		// Check result
-		$isSpam = AkismetSpamProtector::api()->isSpam($content, $author, $email, $url);
+		$isSpam = $this->getIsSpam();
 		if(!$isSpam) return true;
+
+		// If spam should be allowed, let it pass and save it for later
+		if(Config::inst()->get('AkismetSpamProtector', 'save_spam')) return true;
 	
 		// Mark as spam
 		$validator->validationError(
@@ -127,6 +107,34 @@ class AkismetField extends FormField {
 			"error"
 		);
 		return false;
+	}
+
+	/**
+	 * Determine if this field is spam or not
+	 *
+	 * @return boolean
+	 */
+	public function getIsSpam() {
+		// Prevent multiple API calls
+		if($this->isSpam !== null) return $this->isSpam;
+
+		// Check bypass permission
+		$permission = Config::inst()->get('AkismetSpamProtector', 'bypass_permission');
+		if($permission && Permission::check($permission)) return false;
+
+		// if the user has logged and there's no force check on member
+		$bypassMember = Config::inst()->get('AkismetSpamProtector', 'bypass_members');
+		if($bypassMember && Member::currentUser()) return false;
+
+		// Map input fields to spam fields
+		$mappedData = $this->getSpamMappedData();
+		$content = isset($mappedData['body']) ? $mappedData['body'] : null;
+		$author = isset($mappedData['authorName']) ? $mappedData['authorName'] : null;
+		$email = isset($mappedData['authorMail']) ? $mappedData['authorMail'] : null;
+		$url = isset($mappedData['authorUrl']) ? $mappedData['authorUrl'] : null;
+
+		// Check result
+		return $this->isSpam = AkismetSpamProtector::api()->isSpam($content, $author, $email, $url);
 	}
 	
 	/**
@@ -151,5 +159,17 @@ class AkismetField extends FormField {
 	public function setFieldMapping($fieldMapping) {
 		$this->fieldMapping = $fieldMapping;
 		return $this;
+	}
+
+	/**
+	 * Allow spam flag to be saved to the underlying data record
+	 *
+	 * @param \DataObjectInterface $record
+	 */
+	public function saveInto(\DataObjectInterface $record) {
+		if(Config::inst()->get('AkismetSpamProtector', 'save_spam')) {
+			$dataValue = $this->getIsSpam() ? 1 : 0;
+			$record->setCastedField($this->name, $dataValue);
+		}
 	}
 }
