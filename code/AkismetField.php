@@ -67,7 +67,8 @@ class AkismetField extends FormField {
 	
 	/**
 	 * This function first gets values from mapped fields and then check these values against
-	 * Mollom web service and then notify callback object with the spam checking result. 
+	 * Mollom web service and then notify callback object with the spam checking result.
+	 * @param Validator $validator
 	 * @return 	boolean		- true when Mollom confirms that the submission is ham (not spam)
 	 *						- false when Mollom confirms that the submission is spam 
 	 * 						- false when Mollom say 'unsure'. 
@@ -94,19 +95,29 @@ class AkismetField extends FormField {
 		$isSpam = $this->getIsSpam();
 		if(!$isSpam) return true;
 
-		// If spam should be allowed, let it pass and save it for later
-		if(Config::inst()->get('AkismetSpamProtector', 'save_spam')) return true;
-	
-		// Mark as spam
-		$validator->validationError(
-			$this->name,
-			_t(
-				'AkismetField.SPAM', 
-				"Your submission has been rejected because it was treated as spam."
-			),
-			"error"
+		// Save error message
+		$errorMessage = _t(
+			'AkismetField.SPAM',
+			"Your submission has been rejected because it was treated as spam."
 		);
-		return false;
+
+		// If spam should be allowed, let it pass and save it for later
+		if(Config::inst()->get('AkismetSpamProtector', 'save_spam')) {
+			// In order to save spam but still display the spam message, we must mock a form message
+			// without failing the validation
+			$errors = array(array(
+				'fieldName' => $this->name,
+				'message' => $errorMessage,
+				'messageType' => 'error',
+			));
+			$formName = $this->getForm()->FormName();
+			Session::set("FormInfo.{$formName}.errors", $errors);
+			return true;
+		} else {
+			// Mark as spam
+			$validator->validationError($this->name, $errorMessage, "error");
+			return false;
+		}
 	}
 
 	/**
