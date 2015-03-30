@@ -90,7 +90,7 @@ class AkismetSpamProtector implements SpamProtector {
 	}
 	
 	/**
-	 * Retrieves Akismet API object singleton
+	 * Retrieves Akismet API object singleton, or null if not configured
 	 * 
 	 * @return AkismetService
 	 */
@@ -98,7 +98,8 @@ class AkismetSpamProtector implements SpamProtector {
 		// Get API key and URL
 		$key = self::get_api_key();
 		if(empty($key)) {
-			throw new Exception("AkismetSpamProtector is incorrectly configured. Please specify an API key.");
+			user_error("AkismetSpamProtector is incorrectly configured. Please specify an API key.", E_USER_WARNING);
+			return null;
 		}
 		$url = Director::protocolAndHost();
 		

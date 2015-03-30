@@ -145,7 +145,9 @@ class AkismetField extends FormField {
 		$url = isset($mappedData['authorUrl']) ? $mappedData['authorUrl'] : null;
 
 		// Check result
-		return $this->isSpam = AkismetSpamProtector::api()->isSpam($content, $author, $email, $url);
+		$api = AkismetSpamProtector::api();
+		$this->isSpam = $api && $api->isSpam($content, $author, $email, $url);
+		return $this->isSpam;
 	}
 	
 	/**
