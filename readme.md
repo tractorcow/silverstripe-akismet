@@ -29,13 +29,14 @@ This module can be easily installed on any already-developed website
 composer require tractorcow/silverstripe-akismet 3.1.x-dev
 ```
 
+`AkismetSpamProtector` is automatically assigned as the default spam protector class.
+
  * If not using composer you'll need to download the 
 [akismet module](https://github.com/tractorcow/silverstripe-akismet/releases/tag/3.1.0), 
 [spam protector](https://github.com/silverstripe/silverstripe-spamprotection/releases/tag/1.2.0),
 and [akismet](https://github.com/tijsverkoyen/Akismet/releases/tag/1.1.0)
 
- * Configure your environment to set 'AkismetSpamProtector' as the protector class, and get an API key from
-[akismet.com](http://akismet.com/) and set in the site against one of the following ways.
+ * Get an API key from [akismet.com](http://akismet.com/) and set in the site against one of the following ways.
 
 config.yml:
 
@@ -43,8 +44,6 @@ config.yml:
 ---
 Name: myspamprotection
 ---
-FormSpamProtectionExtension:
-  default_spam_protector: AkismetSpamProtector
 AkismetSpamProtector:
   api_key: 5555dddd55d5d
 ```
@@ -52,7 +51,6 @@ AkismetSpamProtector:
 _config.php:
 
 ```php
-Config::inst()->update('FormSpamProtectionExtension', 'default_spam_protector', 'AkismetSpamProtector');
 AkismetSpamProtector::set_api_key('5555dddd55d5d');
 ```
 
@@ -60,7 +58,17 @@ _ss_environment.php:
 
 ```
 define('SS_AKISMET_API_KEY', '5555dddd55d5d');
-// and set AkismetSpamProtector as your spam protector using one of the above methods
+```
+
+If instead you want to configure your akismet key via the siteconfig (as a password field) you can
+add the included extension to SiteConfig
+
+mysite/_config/settings.yml:
+
+```yaml
+SiteConfig:
+  extensions:
+    - AkismetConfig
 ```
 
 ## Testing
