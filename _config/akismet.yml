@@ -1,5 +1,11 @@
 ---
 Name: akismet
 ---
+FormSpamProtectionExtension:
+  default_spam_protector: AkismetSpamProtector
 Injector:
   AkismetService: 'AkismetServiceBackend'
+  RequestProcessor:
+    properties:
+      filters:
+        - '%$AkismetProcessor'
