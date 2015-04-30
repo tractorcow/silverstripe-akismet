@@ -106,6 +106,19 @@ _config.php
 CommentingController::add_extension('CommentSpamProtection');
 ```
 
+If necessary, you can also mark spam comments to be saved to the database. This will still display the spam rejection
+notice, but spam comments will now be available for moderation in the backend. In order to enable this feature add
+the following to your configuration.
+
+config.yml
+
+
+```yaml
+# Allows spam posts to be saved for review if necessary
+AkismetSpamProtector:
+  save_spam: true
+```
+
 ## Custom Form Usage
 To enable spam protection in your custom forms, call the enableSpamProtection method with your field names mapped to the akismet fields:
 
