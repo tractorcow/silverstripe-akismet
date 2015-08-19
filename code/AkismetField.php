@@ -32,8 +32,8 @@ class AkismetField extends FormField {
 		// If confirmation is required then return a checkbox
 		return CheckboxField::create(
 			$this->getName(),
-			_t('AkismetField.NOTIFICATION', 'I understand that, and give consent to, having this content submitted to
-				a third party for automated spam detection')
+			_t('AkismetField.NOTIFICATION', 'I understand that, and give consent to, having this content submitted to '
+				. 'a third party for automated spam detection')
 		)
 			->setError($this->Message(), $this->MessageType())
 			->setForm($this->getForm());

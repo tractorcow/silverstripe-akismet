@@ -1,0 +1,5 @@
+pt:
+  AkismetField:
+    NOTIFICATION: 'Compreendo e aceito, que este conteúdo seja submetido a terceiros para detecção automática de "spam".'
+    NOTIFICATIONREQUIRED: 'Deve dar consentimento à submissão deste conteúdo à detecção de "spam".'
+    SPAM: 'O seu conteúdo foi rejeitado pois foi considerado "spam"'
