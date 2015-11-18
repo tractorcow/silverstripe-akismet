@@ -7,6 +7,8 @@ Simple spam filter for Silverstripe using Akismet
 Also, please [report any issues](https://github.com/tractorcow/silverstripe-akismet/issues)
 you may encounter, as it helps us all out!
 
+Please see [the changelog](changelog.md) for module history.
+
 ## Credits and Authors
 
  * Damian Mooyman - <https://github.com/tractorcow/silverstripe-akismet>
