@@ -4,6 +4,12 @@ class AkismetTest extends FunctionalTest {
 
 	protected $extraDataObjects = array('AkismetTest_Submission');
 
+	protected $usesDatabase = true;
+
+	protected $requiredExtensions = array(
+		'SiteConfig' => array('AkismetConfig')
+	);
+
 	public function setUp() {
 		parent::setUp();
 		Injector::nest();
@@ -55,7 +61,11 @@ class AkismetTest extends FunctionalTest {
 			'action_doSubmit' => 'Submit',
 		));
 
-		$this->assertContains('Your submission has been rejected because it was treated as spam.', $result->getBody());
+		$errorMessage = _t(
+			'AkismetField.SPAM',
+			"Your submission has been rejected because it was treated as spam."
+		);
+		$this->assertContains($errorMessage, $result->getBody());
 		$saved = AkismetTest_Submission::get()->last();
 		$this->assertEmpty($saved);
 	}
@@ -88,7 +98,11 @@ class AkismetTest extends FunctionalTest {
 			'action_doSubmit' => 'Submit',
 		));
 
-		$this->assertContains('Your submission has been rejected because it was treated as spam.', $result->getBody());
+		$errorMessage = _t(
+			'AkismetField.SPAM',
+			"Your submission has been rejected because it was treated as spam."
+		);
+		$this->assertContains($errorMessage, $result->getBody());
 		$saved = AkismetTest_Submission::get()->last();
 		$this->assertNotEmpty($saved);
 		$this->assertEquals('spam', $saved->Name);
@@ -97,6 +111,21 @@ class AkismetTest extends FunctionalTest {
 		$this->assertEquals(true, (bool)$saved->IsSpam);
 	}
 
+	/**
+	 * Test that the request processor can safely activate when able (and only then)
+	 */
+	public function testProcessor() {
+		$siteconfig = SiteConfig::current_site_config();
+		$siteconfig->write();
+
+		// Test assignment via request filter
+		$processor = new AkismetTest_TestProcessor();
+		$this->assertTrue($processor->publicIsDBReady());
+
+		// Remove AkismetKey field
+		DB::query('ALTER TABLE "SiteConfig" DROP COLUMN "AkismetKey"');
+		$this->assertFalse($processor->publicIsDBReady());
+	}
 
 }
 
@@ -163,5 +192,11 @@ class AkismetTest_Service implements TestOnly, AkismetService {
 	public function isSpam($content, $author = null, $email = null, $url = null, $permalink = null, $type = null) {
 		// This dummy service only checks the content
 		return $content === 'spam';
+	}
+}
+
+class AkismetTest_TestProcessor extends AkismetProcessor implements TestOnly {
+	public function publicIsDBReady() {
+		return $this->isDBReady();
 	}
 }
