@@ -3,9 +3,9 @@
 /**
  * Describes TijsVerkoyen\Akismet\Akismet
  */
-interface AkismetService {
-	
-	/**
+interface AkismetService
+{
+    /**
      * Check if the comment is spam or not
      * This is basically the core of everything. This call takes a number of
      * arguments and characteristics about the submitted content and then
