@@ -2,4 +2,4 @@ en:
   AkismetField:
     NOTIFICATION: 'I understand that, and give consent to, having this content submitted to a third party for automated spam detection'
     NOTIFICATIONREQUIRED: 'You must give consent to submit this content to spam detection'
-    SPAM: Your submission has been rejected because it was treated as spam.
+    SPAM: 'Your submission has been rejected because it was treated as spam.'

@@ -1,14 +1,11 @@
 ---
 Name: akismet
 ---
-AkismetSpamProtector:
-# Set this to your API key
-  api_key: null
-# Permission required to bypass check
-  bypass_permission: ADMIN
-# Set to try to bypass check for all logged in users
-  bypass_members: false
-# IMPORTANT: If you are operating in a country (such as Germany) that has content transmission disclosure
-# requirements, set this to true in order to require a user prompt prior to submission of user data
-# to the Akismet servers
-  require_confirmation: false
+FormSpamProtectionExtension:
+  default_spam_protector: AkismetSpamProtector
+Injector:
+  AkismetService: 'AkismetServiceBackend'
+  RequestProcessor:
+    properties:
+      filters:
+        - '%$AkismetProcessor'

@@ -1,5 +1,5 @@
 {
-	"name": "tractorcow/silverstripe-akismet",
+	"name": "silverstripe/akismet",
 	"description": "Akismet antispam module for Silverstripe",
 	"type": "silverstripe-module",
 	"keywords": ["silverstripe", "spam", "akismet"],
@@ -11,13 +11,20 @@
 		}
 	],
 	"support": {
-		"issues": "https://github.com/tractorcow/silverstripe-akismet/issues"
+		"issues": "https://github.com/silverstripe/silverstripe-akismet/issues"
 	},
 	"require": {
+		"silverstripe/cms": "~3.1",
+		"silverstripe/framework": "~3.1",
 		"tijsverkoyen/akismet": "1.1.0",
-		"silverstripe/spamprotection": ">=1.2.0"
+		"silverstripe/spamprotection": "~2.0"
+	},
+	"require-dev": {
+		"phpunit/PHPUnit": "~3.7@stable"
 	},
 	"extra": {
-		"installer-name": "akismet"
+		"branch-alias": {
+			"dev-master": "3.2.x-dev"
+		}
 	}
 }

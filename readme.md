@@ -1,9 +1,13 @@
 # Akismet Silverstripe Module
 
+[![Build Status](https://secure.travis-ci.org/silverstripe/silverstripe-akismet.png?branch=master)](http://travis-ci.org/silverstripe/silverstripe-akismet)
+
 Simple spam filter for Silverstripe using Akismet
 
 Also, please [report any issues](https://github.com/tractorcow/silverstripe-akismet/issues)
 you may encounter, as it helps us all out!
+
+Please see [the changelog](changelog.md) for module history.
 
 ## Credits and Authors
 
@@ -27,13 +31,14 @@ This module can be easily installed on any already-developed website
 composer require tractorcow/silverstripe-akismet 3.1.x-dev
 ```
 
+`AkismetSpamProtector` is automatically assigned as the default spam protector class.
+
  * If not using composer you'll need to download the 
 [akismet module](https://github.com/tractorcow/silverstripe-akismet/releases/tag/3.1.0), 
 [spam protector](https://github.com/silverstripe/silverstripe-spamprotection/releases/tag/1.2.0),
 and [akismet](https://github.com/tijsverkoyen/Akismet/releases/tag/1.1.0)
 
- * Configure your environment to set 'AkismetSpamProtector' as the protector class, and get an API key from
-[akismet.com](http://akismet.com/) and set in the site against one of the following ways.
+ * Get an API key from [akismet.com](http://akismet.com/) and set in the site against one of the following ways.
 
 config.yml:
 
@@ -41,8 +46,6 @@ config.yml:
 ---
 Name: myspamprotection
 ---
-FormSpamProtectionExtension:
-  default_spam_protector: AkismetSpamProtector
 AkismetSpamProtector:
   api_key: 5555dddd55d5d
 ```
@@ -50,7 +53,6 @@ AkismetSpamProtector:
 _config.php:
 
 ```php
-Config::inst()->update('FormSpamProtectionExtension', 'default_spam_protector', 'AkismetSpamProtector');
 AkismetSpamProtector::set_api_key('5555dddd55d5d');
 ```
 
@@ -58,7 +60,17 @@ _ss_environment.php:
 
 ```
 define('SS_AKISMET_API_KEY', '5555dddd55d5d');
-// and set AkismetSpamProtector as your spam protector using one of the above methods
+```
+
+If instead you want to configure your akismet key via the siteconfig (as a password field) you can
+add the included extension to SiteConfig
+
+mysite/_config/settings.yml:
+
+```yaml
+SiteConfig:
+  extensions:
+    - AkismetConfig
 ```
 
 ## Testing
@@ -94,6 +106,19 @@ _config.php
 
 ```php
 CommentingController::add_extension('CommentSpamProtection');
+```
+
+If necessary, you can also mark spam comments to be saved to the database. This will still display the spam rejection
+notice, but spam comments will now be available for moderation in the backend. In order to enable this feature add
+the following to your configuration.
+
+config.yml
+
+
+```yaml
+# Allows spam posts to be saved for review if necessary
+AkismetSpamProtector:
+  save_spam: true
 ```
 
 ## Custom Form Usage

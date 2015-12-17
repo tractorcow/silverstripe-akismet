@@ -1,0 +1,4 @@
+id:
+  AkismetField:
+    NOTIFICATIONREQUIRED: 'Anda harus memberikan persetujuan untuk mengajukan konten ini ke deteksi spam'
+    SPAM: 'Pengajuan Anda telah ditolak karena dicurigai sebagai spam'
